@@ -125,7 +125,7 @@
     var d = new Date();
     var year = d.getFullYear();
     var month = d.getMonth();
-    var newYear = (year * 12 + month) / 12;     // if month is over 6, then will get more than 0.5 => resulting in nexy year wrap.
+    var newYear = (year * 12 + month) / 12;     // if month is over 6, then will get more than 0.5 => resulting in next year wrap.
                                                 // 1.2021 => 2021, ..., 5.2021 => 2021,... 6.2021 => 2022, 12.2021 => 2022
     newYear = Math.round(newYear);
     welcomeDiv.innerHTML = welcomeDiv.innerHTML.replace('{year}', newYear)
