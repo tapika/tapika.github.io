@@ -464,13 +464,13 @@
     play();
 
     const canvas = document.getElementById('sky');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth + 'px';
+    canvas.height = window.innerHeight + 'px';
     RenderSky();
     window.addEventListener('resize',
         function (event) {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            canvas.width = window.innerWidth + 'px';
+            canvas.height = window.innerHeight + 'px';
             RenderSky();
         }, true);
 
