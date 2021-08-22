@@ -461,8 +461,6 @@
 
     setTimeout(falldown, 15 * speed);
 
-    play();
-
     const canvas = document.getElementById('sky');
     canvas.width = window.innerWidth + 'px';
     canvas.height = window.innerHeight + 'px';
@@ -473,6 +471,8 @@
             canvas.height = window.innerHeight + 'px';
             RenderSky();
         }, true);
+
+    play();
 
 </script>
 
