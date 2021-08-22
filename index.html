@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Christmas card, 2015</title>
+    <title>Christmas card, {year}</title>
         <style>
         @font-face {
             font-family: Santas Big Secret BB;
@@ -70,7 +70,7 @@
 </head>
 <body style="overflow:hidden; margin:0; ">
 
-<div id="welcome">Merry Christmas and Happy New 2015 year !
+<div id="welcome">Merry Christmas and Happy New {year} year !
     <br />
     <br />
     <br />
@@ -119,6 +119,17 @@
     var action = "walk";
     var walkOrRunStep;
     var speed = 10
+
+
+    var welcomeDiv = document.getElementById('welcome');
+    var d = new Date();
+    var year = d.getFullYear();
+    var month = d.getMonth();
+    var newYear = (year * 12 + month) / 12;     // if month is over 6, then will get more than 0.5 => resulting in nexy year wrap.
+                                                // 1.2021 => 2021, ..., 5.2021 => 2021,... 6.2021 => 2022, 12.2021 => 2022
+    newYear = Math.round(newYear);
+    welcomeDiv.innerHTML = welcomeDiv.innerHTML.replace('{year}', newYear)
+    document.title = document.title.replace('{year}', newYear)
 
     // Where to fall down
     function getEarthCoordinate()
