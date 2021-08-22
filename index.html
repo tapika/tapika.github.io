@@ -459,10 +459,15 @@
     if (fallSpeed < 6)
         fallSpeed = 6;
 
-    RenderSky();
     setTimeout(falldown, 15 * speed);
 
     play();
+
+    RenderSky();
+    window.addEventListener('resize',
+        function (event) {
+            RenderSky();
+        }, true);
 
 </script>
 
