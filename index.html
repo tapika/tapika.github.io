@@ -18,13 +18,20 @@
             visibility:hidden
         }
 
-        #sky {
-          background: -webkit-linear-gradient(#00111e 30%, #033d5e);
-          background: -moz-linear-gradient(#00111e 30%, #033d5e);
-          background: -o-linear-gradient(#00111e 30%, #033d5e);
-          background: linear-gradient(#00111e 30%, #033d5e);
-          overflow: hidden;
-        }
+            #sky {
+                background: -webkit-linear-gradient(#00111e 30%, #033d5e);
+                background: -moz-linear-gradient(#00111e 30%, #033d5e);
+                background: -o-linear-gradient(#00111e 30%, #033d5e);
+                background: linear-gradient(#00111e 30%, #033d5e);
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                position:absolute;
+                top:0;
+                left:0;
+                right:0;
+                bottom:0;
+            }
 
         #snowflakeContainer {
             position: absolute;
@@ -462,18 +469,7 @@
     setTimeout(falldown, 15 * speed);
 
     const canvas = document.getElementById('sky');
-    canvas.width = window.innerWidth + 'px';
-    canvas.height = window.innerHeight + 'px';
     RenderSky();
-    window.addEventListener('resize',
-        function (event) {
-            canvas.width = window.innerWidth + 'px';
-            canvas.height = window.innerHeight + 'px';
-            RenderSky();
-        }, true);
-
-    play();
-
 </script>
 
 <script src="fallingsnow_v6.js"></script>
