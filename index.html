@@ -1,0 +1,462 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Christmas card, 2015</title>
+        <style>
+        @font-face {
+            font-family: Santas Big Secret BB;
+            src: url(santasb.ttf);
+        }
+
+        .blockedSurface {
+            background-image: url("images/winterBlock.jpg");
+            background-repeat: repeat;
+            width: 100%;
+            height: 120px;
+            background-repeat: repeat-x;
+            visibility:hidden
+        }
+
+        #sky {
+          background: -webkit-linear-gradient(#00111e 30%, #033d5e);
+          background: -moz-linear-gradient(#00111e 30%, #033d5e);
+          background: -o-linear-gradient(#00111e 30%, #033d5e);
+          background: linear-gradient(#00111e 30%, #033d5e);
+          overflow: hidden;
+        }
+
+        #snowflakeContainer {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+        }
+        .snowflake {
+            padding-left: 15px;
+            font-family: Cambria, Georgia, serif;
+            font-size: 14px;
+            line-height: 24px;
+            position: fixed;
+            color: #FFFFFF;
+            user-select: none;
+            z-index: 1000;
+        }
+        .snowflake:hover {
+            cursor: default;
+        }
+
+        #welcome{
+            margin:4%; 
+            width:auto; 
+            height:auto;
+            text-align:center; 
+            border-radius:10px; 
+            background:rgba(255,255,255,.75); 
+            box-shadow:4px 4px 10px 0 rgba(20,20,20,.6); 
+            padding:1em; 
+            position: absolute;
+            left: 5%;
+            top: 5%;
+            color:#700; 
+            font-size:2em; 
+            font-family: 'Santas Big Secret BB', Lobster, georgia, serif;
+            text-shadow: 2px 2px 3px #fff; 
+        }
+
+    </style>
+
+    <link rel="stylesheet" href="audio_control.css" media="screen" type="text/css" />
+
+</head>
+<body style="overflow:hidden; margin:0; ">
+
+<div id="welcome">Merry Christmas and Happy New 2015 year !
+    <br />
+    <br />
+    <br />
+    <div align="right">Sincerely yours - Tarmo</div>
+
+    <div id="audioplayer">
+      <button id="pButton" class="play" onclick="play()"></button>
+      <div id="timeline">    
+  		      <div id="playhead"></div>
+      </div>
+    </div>
+</div>
+
+<div id="snowflakeContainer">
+    <p class="snowflake">*</p>
+</div>
+
+<!-- Starlit sky -->
+<canvas id="sky"></canvas>
+
+<!-- Sheep structure -->
+<div id="sheepDiv" style="position:absolute; left:10px; top:10px; visibility:hidden">
+    <img src="images/sheep_f2.gif" id="sheepImage" width ="50" height="50"/>
+</div>
+
+<!-- Surface -->
+<div id="surfaceDiv" class="blockedSurface" style="position:absolute; visibility:hidden"> </div>
+
+<!-- Christmas tree -->
+<div id="ChristmasTreeDiv" style="position:absolute; visibility:hidden">
+    <img src="xmas_tree.png" id="ChristmasTree"/>
+</div>
+
+<!-- <audio id="Audio1" src="Aly-amp-AJ-Deck-The-Halls.mp3" preload="auto"></audio> -->
+<audio id="music" src="Aly-amp-Aj-Christmas-song-Deck-The-Halls.mp3" preload="auto"></audio>
+<script src="audio_control.js"></script>
+
+<script language="javascript">
+    var imgs = {}           // Image filenames
+    var imgCache = {}       // Images itself.
+    var sheep = null
+    var sheepDiv = null
+    var lookdir = 0;        // right = 0, left = 1
+    var fallToYcoord
+    var fallSpeed = 6;
+    var action = "walk";
+    var walkOrRunStep;
+    var speed = 10
+
+    // Where to fall down
+    function getEarthCoordinate()
+    {
+        return window.innerHeight - 200;
+    }
+
+    function falldown() {
+        walkOrRunStep = 0;
+        lookdir = rnd(2);
+        sheep.src = imgs["normal"][lookdir];
+        sheepDiv.top = '-50px';
+        sheepDiv.left = rnd(window.innerWidth - 100) + 50 + 'px';
+        sheepDiv.visibility = "visible";
+        sheepDiv.zIndex = 2;        // in front of christmas tree.
+        fallToYcoord = getEarthCoordinate();
+
+        var surfaceDiv = document.getElementById('surfaceDiv').style;
+        surfaceDiv.top = (getEarthCoordinate() + 45) + 'px';
+        surfaceDiv.visibility = "visible";
+
+        var ChristmasTree = document.getElementById('ChristmasTree').style;
+        // Same as width=50% only is placed only once - by us.
+        ChristmasTree.height = parseInt(window.innerHeight) * 0.5 + 'px';
+        var ChristmasTreeDiv = document.getElementById('ChristmasTreeDiv').style;
+        ChristmasTreeDiv.top =
+            (getEarthCoordinate() + 60 - parseInt(document.getElementById('ChristmasTree').height)) + 'px';
+        // left = 70%
+        ChristmasTreeDiv.left = parseInt(window.innerWidth) * 0.7 + 'px';
+        ChristmasTreeDiv.visibility = "visible";
+        ChristmasTreeDiv.zIndex = 1;
+
+        sheepYcoord = 0;
+        setTimeout(falling, 15 * speed);
+    }//falldown
+
+    function falling() {
+        var Ycoord = parseInt(sheepDiv.top);
+        if ((Ycoord + fallSpeed) > fallToYcoord) {
+            sheepDiv.top = fallToYcoord + 'px';
+            setTimeout(figureaction, 35 * speed);
+        } else {
+            Ycoord += fallSpeed;
+            sheepDiv.top = Ycoord + 'px';
+            setTimeout(falling, 5 * speed);
+        }
+    }//falling
+
+    function moveSheep(deltaX, deltaY)
+    {
+        if (deltaY != 0) {
+            var Ycoord = parseInt(sheepDiv.top);
+            Ycoord += deltaY;
+            sheepDiv.top = Ycoord + 'px';
+        }
+
+        if (deltaX != 0) {
+            var Xcoord = parseInt(sheepDiv.left);
+            Xcoord += deltaX;
+            sheepDiv.left = Xcoord + 'px';
+        }
+    }
+
+    function stay() {
+        if (rnd(6) != 0) { setTimeout(stay, 30 * speed); }
+        else { setTimeout(figureaction, 30 * speed); }
+    } //stay
+
+
+    function walk()
+    {
+        sheep.src = imgs[action][lookdir * 2 + walkOrRunStep];
+        if (sheep.src == null)
+        {
+            alert(action);
+        }
+        walkOrRunStep++;
+        walkOrRunStep %= 2;
+
+        if (lookdir)
+            moveSheep(-4, 0);
+        else 
+            moveSheep(4, 0);
+
+        if (walkOrRunStep == 0 && rnd(6) == 0) {
+            setTimeout(figureaction, 15 * speed);
+            return;
+        }
+        setTimeout(walk, 15 * speed);
+    } //move
+
+    var turnMode;       // turn_front or turn_back
+
+    function turnaround(posx)
+    {
+        if (posx == 0) {
+            setTimeout(figureaction, 50 * speed);
+            lookdir ^= 1;
+            sheep.src = imgs["normal"][lookdir];
+            return;
+        }
+
+        var imgIndex;
+        if (lookdir) { imgIndex = 3 - posx; } else { imgIndex = posx - 1; }
+        sheep.src = imgs[ turnMode ][imgIndex];
+        posx--;
+        setTimeout("turnaround(" + posx.toString() + ");", 30 * speed);
+    } //turnaround
+
+    function turn()
+    {
+        if (rnd(2))
+            turnMode = "turn_front";
+        else 
+            turnMode = "turn_back";
+
+        turnaround(3);
+    }
+
+    function run()
+    {
+        moveSheep(-(lookdir * 2 - 1) * 8, 0);
+        sheep.src = imgs[(lookdir == 0) ? "run_right" : "run_left"][walkOrRunStep];
+
+        if (OutOfScreenRestart()) {
+            return;
+        }
+
+        walkOrRunStep++;
+        walkOrRunStep %= 2;
+
+        if (walkOrRunStep == 0 && rnd(10) == 0)
+        {
+            sheep.src = imgs["normal"][lookdir];
+            setTimeout(figureaction, 30 * speed);
+        } else {
+            setTimeout(run, 12 * speed);
+        }
+    } //run
+
+
+    function OutOfScreenRestart()
+    {
+        if (parseInt(sheepDiv.left) < -20 || parseInt(sheepDiv.left) > window.innerWidth) //Out of ranges ?
+        {
+            falldown();
+            return true;
+        } //if
+
+        return false;
+    }
+
+    var eyeImageIndex = 0;
+
+    function FirstLookup()
+    {
+        sheep.src = imgs[lookdir ? "lookup_right" : "lookup_left"][0];
+        setTimeout('lookup(0);', 50 * speed);
+    }
+
+    function lookup(eyeMoveDelta)
+    {
+        if (eyeMoveDelta)
+        {
+            eyeImageIndex += eyeMoveDelta;
+            sheep.src = imgs[lookdir ? "lookup_right" : "lookup_left"][eyeImageIndex];
+
+            if (eyeMoveDelta == 1 && eyeImageIndex == 2)
+            {
+                setTimeout('lookup(-1);', 25 * speed); //Move eye back
+            }
+            else
+            {
+                if (eyeImageIndex != 0)
+                {
+                    setTimeout("lookup(" + eyeMoveDelta.toString() + ");", 25 * speed);
+                }
+                else {
+                    eyeImageIndex = 0;
+                    setTimeout('lookup(0);', 80 * speed);
+                }
+            }
+            return;
+        } //if
+
+        var action = rnd(3);
+        if (action == 0)
+        {
+            lookup(1);
+            return;
+        }
+
+        if (action == 1)
+        {
+            sheep.src = imgs[lookdir ? "lookup_right" : "lookup_left"][0];
+            setTimeout('lookup(0);', 160 * speed);
+            return;
+        }
+
+        setTimeout(figureaction, 30 * speed);
+    } //lookup
+
+
+    function figureaction()
+    {
+        if (OutOfScreenRestart())
+            return;
+
+        var action_probability = {
+            '5': walk,
+            '3': run,
+            '2': turn,
+            '1': stay,
+            '1': FirstLookup
+        };
+
+        var total = 0;
+        for (var key in action_probability)
+            total += parseInt(key);
+
+        var action = rnd(total);
+        for (var key in action_probability)
+        {
+            action -= parseInt(key);
+            if (action < 0)
+            {
+                action_probability[key]();
+                break;
+            }
+        }
+    } //figureaction
+
+
+    function preCacheImages()
+    {
+        imgs["normal"] = [
+            "sheep_nr",
+            "sheep_nl"
+        ];
+
+        imgs["walk"] = [
+            "sheep_wr",
+            "sheep_nr",
+
+            "sheep_wl",
+            "sheep_nl"
+        ];
+
+        imgs["turn_back"] = [
+            "sheep_b3",
+            "sheep_b2",
+            "sheep_b1"
+    ];
+
+        imgs["turn_front"] = [
+            "sheep_f1",
+            "sheep_f2",
+            "sheep_f3"
+        ];
+
+        imgs["run_right"] = [
+            "sheep_rr1",
+            "sheep_rr2"
+        ];
+
+        imgs["run_left"] = [
+            "sheep_rl1",
+            "sheep_rl2"
+        ];
+
+        imgs["lookup_left"] = [
+            "sheep_upl1",
+            "sheep_upl2",
+            "sheep_upl3"
+        ];
+
+        imgs["lookup_right"] = [
+            "sheep_upr1",
+            "sheep_upr2",
+            "sheep_upr3"
+        ];
+
+        for (var movement in imgs) {
+            imgCache[movement] = [];
+            for (var i = 0; i < imgs[movement].length; i++) {
+                var img = new Image();
+                imgs[movement][i] = "images/" + imgs[movement][i] + ".gif";
+                img.src = imgs[movement][i];
+                imgCache[movement][i] = img;
+            }
+        }
+    }
+
+    function rnd(range) {
+        return Math.floor(Math.random() * range);
+    } //rnd
+
+    function RenderSky() {
+        var c = document.getElementById('sky');
+        var ctx = c.getContext('2d');
+        var xMax = c.width = window.screen.availWidth;
+        var yMax = c.height = window.screen.availHeight;
+
+        var hmTimes = Math.round(xMax + yMax);
+
+        for (var i = 0; i <= hmTimes; i++) {
+            var randomX = Math.floor((Math.random() * xMax) + 1);
+            var randomY = Math.floor((Math.random() * yMax) + 1);
+            var randomSize = Math.floor((Math.random() * 2) + 1);
+            var randomOpacityOne = Math.floor((Math.random() * 9) + 1);
+            var randomOpacityTwo = Math.floor((Math.random() * 9) + 1);
+            var randomHue = Math.floor((Math.random() * 360) + 1);
+            if (randomSize > 1) {
+                ctx.shadowBlur = Math.floor((Math.random() * 15) + 5);
+                ctx.shadowColor = "white";
+            }
+            ctx.fillStyle = "hsla(" + randomHue + ", 30%, 80%, ." + randomOpacityOne + randomOpacityTwo + ")";
+            ctx.fillRect(randomX, randomY, randomSize, randomSize);
+        }
+
+    }
+
+    sheep = document.getElementById('sheepImage');
+    sheepDiv = document.getElementById('sheepDiv').style;
+    preCacheImages();
+    fallSpeed = (window.innerHeight / 60);
+    if (fallSpeed < 6)
+        fallSpeed = 6;
+
+    RenderSky();
+    setTimeout(falldown, 15 * speed);
+
+    play();
+
+</script>
+
+<script src="fallingsnow_v6.js"></script>
+
+</body>
+</html>
+
