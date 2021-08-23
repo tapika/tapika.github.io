@@ -9,6 +9,15 @@
             src: url(santasb.ttf);
         }
 
+        #screenFiller {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            border: 0px solid orange
+        }
+
         .blockedSurface {
             background-image: url("images/winterBlock.jpg");
             background-repeat: repeat;
@@ -77,43 +86,44 @@
 
 </head>
 <body style="overflow:hidden; margin:0; ">
+    <div id="screenFiller" style="margin: 0; overflow: hidden;">
+        <div id="welcome">
+            Merry Christmas and Happy New {year} year !
+            <br />
+            <br />
+            <br />
+            <div align="right">Sincerely yours - Tarmo</div>
 
-<div id="welcome">Merry Christmas and Happy New {year} year !
-    <br />
-    <br />
-    <br />
-    <div align="right">Sincerely yours - Tarmo</div>
+            <div id="audioplayer">
+                <button id="pButton" class="play" onclick="play()"></button>
+                <div id="timeline">
+                    <div id="playhead"></div>
+                </div>
+            </div>
+        </div>
 
-    <div id="audioplayer">
-      <button id="pButton" class="play" onclick="play()"></button>
-      <div id="timeline">    
-  		      <div id="playhead"></div>
-      </div>
-    </div>
-</div>
+        <div id="snowflakeContainer">
+            <p class="snowflake">*</p>
+        </div>
 
-<div id="snowflakeContainer">
-    <p class="snowflake">*</p>
-</div>
+        <!-- Starlit sky -->
+        <canvas id="sky"></canvas>
 
-<!-- Starlit sky -->
-<canvas id="sky"></canvas>
+        <!-- Sheep structure -->
+        <div id="sheepDiv" style="position:absolute; left:10px; top:10px; visibility:hidden">
+            <img src="images/sheep_f2.gif" id="sheepImage" width="50" height="50" />
+        </div>
 
-<!-- Sheep structure -->
-<div id="sheepDiv" style="position:absolute; left:10px; top:10px; visibility:hidden">
-    <img src="images/sheep_f2.gif" id="sheepImage" width ="50" height="50"/>
-</div>
+        <!-- Surface -->
+        <div id="surfaceDiv" class="blockedSurface" style="position:absolute; visibility:hidden"> </div>
 
-<!-- Surface -->
-<div id="surfaceDiv" class="blockedSurface" style="position:absolute; visibility:hidden"> </div>
+        <!-- Christmas tree -->
+        <div id="ChristmasTreeDiv" style="position:absolute; visibility:hidden">
+            <img src="xmas_tree.png" id="ChristmasTree" />
+        </div>
+    </div> 
 
-<!-- Christmas tree -->
-<div id="ChristmasTreeDiv" style="position:absolute; visibility:hidden">
-    <img src="xmas_tree.png" id="ChristmasTree"/>
-</div>
-
-<!-- <audio id="Audio1" src="Aly-amp-AJ-Deck-The-Halls.mp3" preload="auto"></audio> -->
-<audio id="music" src="Aly-amp-Aj-Christmas-song-Deck-The-Halls.mp3" preload="auto"></audio>
+    <audio id="music" src="Aly-amp-Aj-Christmas-song-Deck-The-Halls.mp3" preload="auto"></audio>
 <script src="audio_control.js"></script>
 
 <script language="javascript">
@@ -134,14 +144,13 @@
     var year = d.getFullYear();
     var month = d.getMonth();
     var newYear = (year * 12 + month) / 12;     // if month is over 6, then will get more than 0.5 => resulting in next year wrap.
-                                                // 1.2021 => 2021, ..., 5.2021 => 2021,... 6.2021 => 2022, 12.2021 => 2022
+    // 1.2021 => 2021, ..., 5.2021 => 2021,... 6.2021 => 2022, 12.2021 => 2022
     newYear = Math.round(newYear);
     welcomeDiv.innerHTML = welcomeDiv.innerHTML.replace('{year}', newYear)
     document.title = document.title.replace('{year}', newYear)
 
     // Where to fall down
-    function getEarthCoordinate()
-    {
+    function getEarthCoordinate() {
         return window.innerHeight - 200;
     }
 
@@ -186,8 +195,7 @@
         }
     }//falling
 
-    function moveSheep(deltaX, deltaY)
-    {
+    function moveSheep(deltaX, deltaY) {
         if (deltaY != 0) {
             var Ycoord = parseInt(sheepDiv.top);
             Ycoord += deltaY;
@@ -207,11 +215,9 @@
     } //stay
 
 
-    function walk()
-    {
+    function walk() {
         sheep.src = imgs[action][lookdir * 2 + walkOrRunStep];
-        if (sheep.src == null)
-        {
+        if (sheep.src == null) {
             alert(action);
         }
         walkOrRunStep++;
@@ -219,7 +225,7 @@
 
         if (lookdir)
             moveSheep(-4, 0);
-        else 
+        else
             moveSheep(4, 0);
 
         if (walkOrRunStep == 0 && rnd(6) == 0) {
@@ -231,8 +237,7 @@
 
     var turnMode;       // turn_front or turn_back
 
-    function turnaround(posx)
-    {
+    function turnaround(posx) {
         if (posx == 0) {
             setTimeout(figureaction, 50 * speed);
             lookdir ^= 1;
@@ -242,23 +247,21 @@
 
         var imgIndex;
         if (lookdir) { imgIndex = 3 - posx; } else { imgIndex = posx - 1; }
-        sheep.src = imgs[ turnMode ][imgIndex];
+        sheep.src = imgs[turnMode][imgIndex];
         posx--;
         setTimeout("turnaround(" + posx.toString() + ");", 30 * speed);
     } //turnaround
 
-    function turn()
-    {
+    function turn() {
         if (rnd(2))
             turnMode = "turn_front";
-        else 
+        else
             turnMode = "turn_back";
 
         turnaround(3);
     }
 
-    function run()
-    {
+    function run() {
         moveSheep(-(lookdir * 2 - 1) * 8, 0);
         sheep.src = imgs[(lookdir == 0) ? "run_right" : "run_left"][walkOrRunStep];
 
@@ -269,8 +272,7 @@
         walkOrRunStep++;
         walkOrRunStep %= 2;
 
-        if (walkOrRunStep == 0 && rnd(10) == 0)
-        {
+        if (walkOrRunStep == 0 && rnd(10) == 0) {
             sheep.src = imgs["normal"][lookdir];
             setTimeout(figureaction, 30 * speed);
         } else {
@@ -279,8 +281,7 @@
     } //run
 
 
-    function OutOfScreenRestart()
-    {
+    function OutOfScreenRestart() {
         if (parseInt(sheepDiv.left) < -20 || parseInt(sheepDiv.left) > window.innerWidth) //Out of ranges ?
         {
             falldown();
@@ -292,27 +293,21 @@
 
     var eyeImageIndex = 0;
 
-    function FirstLookup()
-    {
+    function FirstLookup() {
         sheep.src = imgs[lookdir ? "lookup_right" : "lookup_left"][0];
         setTimeout('lookup(0);', 50 * speed);
     }
 
-    function lookup(eyeMoveDelta)
-    {
-        if (eyeMoveDelta)
-        {
+    function lookup(eyeMoveDelta) {
+        if (eyeMoveDelta) {
             eyeImageIndex += eyeMoveDelta;
             sheep.src = imgs[lookdir ? "lookup_right" : "lookup_left"][eyeImageIndex];
 
-            if (eyeMoveDelta == 1 && eyeImageIndex == 2)
-            {
+            if (eyeMoveDelta == 1 && eyeImageIndex == 2) {
                 setTimeout('lookup(-1);', 25 * speed); //Move eye back
             }
-            else
-            {
-                if (eyeImageIndex != 0)
-                {
+            else {
+                if (eyeImageIndex != 0) {
                     setTimeout("lookup(" + eyeMoveDelta.toString() + ");", 25 * speed);
                 }
                 else {
@@ -324,14 +319,12 @@
         } //if
 
         var action = rnd(3);
-        if (action == 0)
-        {
+        if (action == 0) {
             lookup(1);
             return;
         }
 
-        if (action == 1)
-        {
+        if (action == 1) {
             sheep.src = imgs[lookdir ? "lookup_right" : "lookup_left"][0];
             setTimeout('lookup(0);', 160 * speed);
             return;
@@ -341,8 +334,7 @@
     } //lookup
 
 
-    function figureaction()
-    {
+    function figureaction() {
         if (OutOfScreenRestart())
             return;
 
@@ -359,11 +351,9 @@
             total += parseInt(key);
 
         var action = rnd(total);
-        for (var key in action_probability)
-        {
+        for (var key in action_probability) {
             action -= parseInt(key);
-            if (action < 0)
-            {
+            if (action < 0) {
                 action_probability[key]();
                 break;
             }
@@ -371,8 +361,7 @@
     } //figureaction
 
 
-    function preCacheImages()
-    {
+    function preCacheImages() {
         imgs["normal"] = [
             "sheep_nr",
             "sheep_nl"
@@ -390,7 +379,7 @@
             "sheep_b3",
             "sheep_b2",
             "sheep_b1"
-    ];
+        ];
 
         imgs["turn_front"] = [
             "sheep_f1",
