@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Christmas card, {year}</title>
-        <style>
+    <link rel="stylesheet" type="text/css" href="green-audio-player.css">
+    <style>
         @font-face {
             font-family: Santas Big Secret BB;
             src: url(santasb.ttf);
@@ -24,7 +25,7 @@
             width: 100%;
             height: 120px;
             background-repeat: repeat-x;
-            visibility:hidden
+            visibility: hidden
         }
 
         #sky {
@@ -35,12 +36,12 @@
             overflow: hidden;
             width: 100%;
             height: 100%;
-            position:absolute;
-            top:0;
-            left:0;
-            right:0;
-            bottom:0;
-            z-index:-1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
         }
 
         #snowflakeContainer {
@@ -60,31 +61,36 @@
             z-index: 1000;
         }
 
-        .snowflake:hover {
-            cursor: default;
-        }
+            .snowflake:hover {
+                cursor: default;
+            }
 
-        #welcome{
-            margin:4%; 
-            width:auto; 
-            height:auto;
-            text-align:center; 
-            border-radius:10px; 
-            background:rgba(255,255,255,.75); 
-            box-shadow:4px 4px 10px 0 rgba(20,20,20,.6); 
-            padding:1em; 
+        #welcome {
+            margin: 4%;
+            width: auto;
+            height: auto;
+            text-align: center;
+            border-radius: 10px;
+            background: rgba(255,255,255,.75);
+            box-shadow: 4px 4px 10px 0 rgba(20,20,20,.6);
+            padding: 1em;
             position: absolute;
             left: 5%;
             top: 5%;
-            color:#700; 
-            font-size:2em; 
+            color: #700;
+            font-size: 2em;
             font-family: 'Santas Big Secret BB', Lobster, georgia, serif;
-            text-shadow: 2px 2px 3px #fff; 
+            text-shadow: 2px 2px 3px #fff;
         }
 
+        .audioplayer {
+            position: relative;
+            left: 50%;
+            -webkit-transform: translate(-50%, 30%);
+            transform: translate(-50%, 30%);
+        }
     </style>
 
-    <link rel="stylesheet" href="audio_control.css" media="screen" type="text/css" />
 
 </head>
 <body style="overflow:hidden; margin:0; ">
@@ -96,12 +102,12 @@
             <br />
             <div align="right">Sincerely yours - Tarmo</div>
 
-            <div id="audioplayer">
-                <button id="pButton" class="play" onclick="play()"></button>
-                <div id="timeline">
-                    <div id="playhead"></div>
-                </div>
+            <div class="audioplayer">
+                <audio crossorigin="anonymous" preload="none">
+                    <source src="Aly-amp-Aj-Christmas-song-Deck-The-Halls.mp3" type="audio/mpeg">
+                </audio>
             </div>
+            <script src="green-audio-player.min.js"></script>
         </div>
 
         <div id="snowflakeContainer">
@@ -124,9 +130,6 @@
             <img src="xmas_tree.png" id="ChristmasTree" />
         </div>
     </div> 
-
-    <audio id="music" src="Aly-amp-Aj-Christmas-song-Deck-The-Halls.mp3" preload="auto"></audio>
-<script src="audio_control.js"></script>
 
 <script language="javascript">
     var imgs = {}           // Image filenames
@@ -462,6 +465,11 @@
 
     const canvas = document.getElementById('sky');
     RenderSky();
+
+    document.addEventListener('DOMContentLoaded', function () {
+        new GreenAudioPlayer('.audioplayer', { showTooltips: true, showDownloadButton: false, enableKeystrokes: true });
+    });
+
 </script>
 
 <script src="fallingsnow_v6.js"></script>
